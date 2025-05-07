@@ -1,14 +1,42 @@
 ﻿<Page x:Class="Diplom_Cheremnykh.Pages.FraudCasesPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:Diplom_Cheremnykh.Pages"
-      mc:Ignorable="d" 
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      mc:Ignorable="d"
       d:DesignHeight="450" d:DesignWidth="800"
       Title="FraudCasesPage">
 
-    <Grid>
-        
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Случаи мошенничества"
+                   FontSize="20"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Top"
+                   Margin="0,10,0,0" />
+
+        <!-- DataGrid с отступом от названия -->
+        <DataGrid x:Name="FraudCasesDataGrid" AutoGenerateColumns="False" 
+                  CanUserAddRows="False" CanUserDeleteRows="True"
+                  Margin="10,50,10,10" SelectionChanged="FraudCasesDataGrid_SelectionChanged">
+            <!-- Увеличен верхний отступ на 50 -->
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" />
+                <DataGridTextColumn Header="Username" Binding="{Binding Username}" />
+                <DataGridTextColumn Header="Description" Binding="{Binding Description}" />
+                <DataGridTextColumn Header="Fraud Probability" Binding="{Binding FraudProbability}" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <Button Content="Добавить" Width="100" Margin="5" Click="AddFraudCase_Click"/>
+            <Button Content="Редактировать" Width="100" Margin="5" Click="EditFraudCase_Click"/>
+            <Button Content="Удалить" Width="100" Margin="5" Click="DeleteFraudCase_Click"/>
+        </StackPanel>
     </Grid>
 </Page>

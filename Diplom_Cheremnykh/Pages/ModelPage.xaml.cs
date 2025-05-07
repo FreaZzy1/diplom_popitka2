@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Diplom_Cheremnykh.Data;
 using Diplom_Cheremnykh.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Diplom_Cheremnykh.Pages
 {
@@ -37,21 +38,37 @@ namespace Diplom_Cheremnykh.Pages
         // Метод для отображения информации о пользователе
         private void DisplayUserInfo()
         {
-            // Проверка, что пользователь существует
-            if (_currentUser != null)
+            // Загружаем актуального пользователя из базы по имени
+            var userFromDb = _context.Users.FirstOrDefault(u => u.Username == _currentUser.Username);
+
+            if (userFromDb != null)
             {
-                // Установка имени пользователя и роли в текстовые блоки
-                var username = _currentUser.Username;
-                var role = _currentUser.Role;
+                // Поиск TextBlock'ов по имени
+                var usernameTextBlock = this.FindName("UsernameTextBlock") as TextBlock;
+                var roleTextBlock = this.FindName("RoleTextBlock") as TextBlock;
 
-                // Обновляем текст на странице
-                var usernameTextBlock = (TextBlock)FindName("UsernameTextBlock");
-                var roleTextBlock = (TextBlock)FindName("RoleTextBlock");
-
-                usernameTextBlock.Text = $"Имя пользователя: {username}";
-                roleTextBlock.Text = $"Роль: {role}";
+                // Защита от null — если TextBlock'и найдены
+                if (usernameTextBlock != null && roleTextBlock != null)
+                {
+                    usernameTextBlock.Text = $"Имя пользователя: {userFromDb.Username}";
+                    roleTextBlock.Text = $"Роль: {userFromDb.Role}";
+                }
+                else
+                {
+                    MessageBox.Show("Элементы TextBlock не найдены в разметке.");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Пользователь не найден в базе данных.");
             }
         }
+
+
+
+
+
+
 
         // Обработчик для кнопки управления случаями мошенничества
         private void ManageFraudCasesButton_Click(object sender, RoutedEventArgs e)
