@@ -4,6 +4,11 @@
              xmlns:local="clr-namespace:Diplom_Cheremnykh"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resource/Colors.xaml"/>
+                <ResourceDictionary Source="Resource/Styles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

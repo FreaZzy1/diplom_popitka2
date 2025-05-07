@@ -21,6 +21,7 @@ namespace Diplom_Cheremnykh.Models
         public string PasswordHash { get; set; }
 
         public bool IsFraudulent { get; set; } = false;
+        public string Role { get; set; }
 
         public ICollection<Log> Logs { get; set; }
         public ICollection<FraudCase> FraudCases { get; set; }

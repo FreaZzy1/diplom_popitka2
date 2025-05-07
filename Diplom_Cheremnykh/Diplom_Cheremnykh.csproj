@@ -9,14 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\" />
     <Folder Include="ViewModels\" />
-    <Folder Include="Services\" />
     <Folder Include="NeuralNet\" />
     <Folder Include="Helpers\" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.11" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.0" />
   </ItemGroup>

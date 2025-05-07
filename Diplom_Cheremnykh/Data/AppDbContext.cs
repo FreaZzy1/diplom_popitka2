@@ -21,7 +21,7 @@ namespace Diplom_Cheremnykh.Data
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseMySql("server=127.0.0.1;port=3306;database=Diplom;user=root", new MySqlServerVersion(new Version(8, 0, 11)));
+            optionsBuilder.UseMySql("server=127.0.0.1;port=3306;database=FraudDetectionDB;user=root", new MySqlServerVersion(new Version(8, 0, 11)));
         }
     }
 }
