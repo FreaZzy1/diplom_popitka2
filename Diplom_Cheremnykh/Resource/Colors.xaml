@@ -5,6 +5,8 @@
     <Color x:Key="PrimaryBackgroundColor">#1B1F3B</Color>
     <Color x:Key="SecondaryBackgroundColor">#2D3142</Color>
     <Color x:Key="AccentBlueColor">#00A8E8</Color>
+    
+    
 
     <!-- Кисти -->
     <SolidColorBrush x:Key="PrimaryBackground" Color="{StaticResource PrimaryBackgroundColor}"/>

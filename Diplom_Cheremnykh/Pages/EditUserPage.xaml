@@ -1,0 +1,53 @@
+﻿<Page x:Class="Diplom_Cheremnykh.Pages.EditUserPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      mc:Ignorable="d"
+      Background="{DynamicResource MaterialDesignPaper}">
+
+    <Grid Margin="40">
+        <Border CornerRadius="12" Background="White" Padding="30" materialDesign:ShadowAssist.ShadowDepth="Depth2">
+            <StackPanel Margin="0" VerticalAlignment="Center">
+
+                <TextBlock Text="Редактирование профиля"
+                           FontSize="24"
+                           FontWeight="Bold"
+                           Margin="0 0 0 20"
+                           HorizontalAlignment="Center"
+                           Foreground="{DynamicResource PrimaryHueMidBrush}" />
+
+                <TextBox x:Name="UsernameTextBox"
+                         materialDesign:HintAssist.Hint="Имя пользователя"
+                         Margin="0 0 0 15"
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+
+                <TextBox x:Name="EmailTextBox"
+                         materialDesign:HintAssist.Hint="Электронная почта"
+                         Margin="0 0 0 15"
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                         materialDesign:TextFieldAssist.HasClearButton="True" />
+
+                <PasswordBox x:Name="PasswordBox"
+                             Margin="0 0 0 25"
+                             materialDesign:HintAssist.Hint="Пароль"
+                             materialDesign:TextFieldAssist.HasClearButton="True" />
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 20 0 0">
+                    <Button Content="Отмена"
+                            Click="Cancel_Click"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            Foreground="Gray"
+                            Margin="0 0 10 0" />
+                    <Button Content="Сохранить"
+                            Click="Save_Click"
+                            Style="{StaticResource MaterialDesignRaisedButton}"
+                            Background="{DynamicResource PrimaryHueMidBrush}"
+                            Foreground="White" />
+                </StackPanel>
+
+            </StackPanel>
+        </Border>
+    </Grid>
+</Page>

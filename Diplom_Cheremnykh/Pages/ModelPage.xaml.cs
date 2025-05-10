@@ -38,31 +38,39 @@ namespace Diplom_Cheremnykh.Pages
         // Метод для отображения информации о пользователе
         private void DisplayUserInfo()
         {
-            // Загружаем актуального пользователя из базы по имени
-            var userFromDb = _context.Users.FirstOrDefault(u => u.Username == _currentUser.Username);
-
-            if (userFromDb != null)
+            try
             {
-                // Поиск TextBlock'ов по имени
-                var usernameTextBlock = this.FindName("UsernameTextBlock") as TextBlock;
-                var roleTextBlock = this.FindName("RoleTextBlock") as TextBlock;
+                // Загружаем актуального пользователя из базы по имени
+                var userFromDb = _context.Users.FirstOrDefault(u => u.Username == _currentUser.Username);
 
-                // Защита от null — если TextBlock'и найдены
-                if (usernameTextBlock != null && roleTextBlock != null)
+                if (userFromDb != null)
                 {
-                    usernameTextBlock.Text = $"Имя пользователя: {userFromDb.Username}";
-                    roleTextBlock.Text = $"Роль: {userFromDb.Role}";
+                    // Поиск TextBlock'ов по имени
+                    var usernameTextBlock = this.FindName("UsernameTextBox") as TextBlock;
+                    var roleTextBlock = this.FindName("RoleTextBlock") as TextBlock;
+
+                    // Защита от null — если TextBlock'и найдены
+                    if (usernameTextBlock != null && roleTextBlock != null)
+                    {
+                        usernameTextBlock.Text = $"Имя пользователя: {userFromDb.Username}";
+                        roleTextBlock.Text = $"Роль: {userFromDb.Role}";
+                    }
+                    else
+                    {
+                        MessageBox.Show("Элементы TextBlock не найдены в разметке.");
+                    }
                 }
                 else
                 {
-                    MessageBox.Show("Элементы TextBlock не найдены в разметке.");
+                    MessageBox.Show($"Пользователь с именем '{_currentUser.Username}' не найден в базе данных.");
                 }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Пользователь не найден в базе данных.");
+                MessageBox.Show($"Ошибка при загрузке данных пользователя: {ex.Message}");
             }
         }
+
 
 
 
@@ -81,7 +89,7 @@ namespace Diplom_Cheremnykh.Pages
         private void EditProfileButton_Click(object sender, RoutedEventArgs e)
         {
             // Переход к странице для редактирования профиля пользователя
-            _mainWindow.OpenPages(new Pages.EditProfilePage(_mainWindow, _context, _currentUser));
+            _mainWindow.OpenPages(new Pages.EditUserPage(_mainWindow, _context, _currentUser));
         }
 
         // Обработчик для кнопки выхода из системы
