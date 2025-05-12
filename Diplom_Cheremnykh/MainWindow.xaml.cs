@@ -27,12 +27,16 @@ namespace Diplom_Cheremnykh
             InitializeComponent();
 
             _context = new AppDbContext();  // Создайте экземпляр контекста (или используйте DI)
-            _currentUser = new User(); // Пустой пользователь
-            frame.Navigate(new Pages.LoginPage(this, _context, _currentUser));
+            
+            frame.Navigate(new Pages.LoginPage(this, _context));
         }
         public void OpenPages(Page page)
         {
             frame.Content = page;
+        }
+        public void SetCurrentUser(User user)
+        {
+            _currentUser = user;
         }
     }
 }

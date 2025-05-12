@@ -25,13 +25,13 @@ namespace Diplom_Cheremnykh.Pages
     {
         public AppDbContext _context;
         public MainWindow _mainWindow;
-        public User _currentUser;
-        public RegisterPage(MainWindow mainWindow, AppDbContext context, User currentUser)
+       
+        public RegisterPage(MainWindow mainWindow, AppDbContext context)
         {
             InitializeComponent();
             _mainWindow = mainWindow;
             _context = context;
-            _currentUser = currentUser;
+            
         }
 
         // Обработчик кнопки регистрации
@@ -82,7 +82,7 @@ namespace Diplom_Cheremnykh.Pages
                 _context.SaveChanges();
                 MessageBox.Show("Регистрация прошла успешно.");
                 // Навигация на страницу входа (например, можно закрыть текущую страницу или перейти на LoginPage)
-                NavigationService.Navigate(new LoginPage(_mainWindow,_context,_currentUser));
+                NavigationService.Navigate(new LoginPage(_mainWindow,_context));
             }
             catch (Exception ex)
             {
@@ -93,7 +93,7 @@ namespace Diplom_Cheremnykh.Pages
         // Обработчик кнопки для возврата на страницу входа
         private void LoginRedirectButton_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService.Navigate(new LoginPage(_mainWindow, _context, _currentUser));
+            NavigationService.Navigate(new LoginPage(_mainWindow, _context));
         }
         private void UsernameTextBox_GotFocus(object sender, RoutedEventArgs e)
         {

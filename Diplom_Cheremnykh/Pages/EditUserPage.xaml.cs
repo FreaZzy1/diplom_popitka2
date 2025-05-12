@@ -102,5 +102,10 @@ namespace Diplom_Cheremnykh.Pages
         {
             NavigationService?.GoBack();
         }
+
+        private void BackButton_Click(object sender, RoutedEventArgs e)
+        {
+            _mainWindow.OpenPages(new Pages.ModelPage(_mainWindow, _context,_currentUser));
+        }
     }
 }

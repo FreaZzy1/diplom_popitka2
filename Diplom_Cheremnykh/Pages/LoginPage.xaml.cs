@@ -27,12 +27,12 @@ namespace Diplom_Cheremnykh.Pages
         public MainWindow _mainWindow;
         private AppDbContext _context;
         public User _currentUser;
-        public LoginPage(MainWindow mainWindow, AppDbContext context, User currentUser)
+        public LoginPage(MainWindow mainWindow, AppDbContext context)
         {
             InitializeComponent();
             _mainWindow = mainWindow;
             _context = context;
-            _currentUser = currentUser;
+           
         }
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
@@ -66,40 +66,37 @@ namespace Diplom_Cheremnykh.Pages
         // Метод для аутентификации пользователя
         private bool AuthenticateUser(string username, string password)
         {
-            // Проверка наличия пользователя в базе данных
             var user = _context.Users.FirstOrDefault(u => u.Username == username);
 
             if (user == null)
             {
-                return false; // Пользователь не найден
+                return false;
             }
 
-            // Проверка на возможное наличие DBNull в PasswordHash
-            string passwordHash = user.PasswordHash as string;  // Преобразуем в строку, если возможно
+            string passwordHash = user.PasswordHash;
 
             if (string.IsNullOrEmpty(passwordHash))
             {
-                return false; // Если пароль хэш пуст или NULL, авторизация невозможна
+                return false;
             }
 
-            // Сравниваем введённый пароль с хэшированным паролем
             try
             {
                 if (!BCrypt.Net.BCrypt.Verify(password, passwordHash))
                 {
-                    return false; // Неверный пароль
+                    return false;
                 }
 
-                // Теперь, когда пользователь авторизован, проверяем его роль
+                _currentUser = user; // ✅ Сохраняем текущего пользователя
+                _mainWindow.SetCurrentUser(user); // ✅ Также можно установить в MainWindow
+
                 if (user.Role == "Admin")
                 {
-                    // Логика для администратора
                     MessageBox.Show("Вы авторизовались как Администратор.");
                     return true;
                 }
                 else if (user.Role == "User")
                 {
-                    // Логика для обычного пользователя
                     MessageBox.Show("Вы авторизовались как пользователь.");
                     return true;
                 }
@@ -119,7 +116,7 @@ namespace Diplom_Cheremnykh.Pages
         private void RegisterButton_Click(object sender, RoutedEventArgs e)
         {
             // Переход на страницу регистрации
-            _mainWindow.OpenPages(new Pages.RegisterPage(_mainWindow, _context, _currentUser));
+            _mainWindow.OpenPages(new Pages.RegisterPage(_mainWindow, _context));
         }
 
         private void ForgotPasswordButton_Click(object sender, RoutedEventArgs e)

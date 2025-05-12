@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Diplom_Cheremnykh.Data;
 
 namespace Diplom_Cheremnykh.Pages
 {
@@ -20,7 +21,8 @@ namespace Diplom_Cheremnykh.Pages
     /// </summary>
     public partial class PredictionPage : Page
     {
-        public PredictionPage()
+        private readonly AppDbContext _context;
+        public PredictionPage(AppDbContext _context)
         {
             InitializeComponent();
         }

@@ -24,7 +24,7 @@ namespace Diplom_Cheremnykh.Pages
     public partial class ModelPage : Page
     {
         public MainWindow _mainWindow;
-        private AppDbContext _context;
+        public AppDbContext _context;
         public User _currentUser;
         public ModelPage(MainWindow mainWindow, AppDbContext context, User currentUser)
         {
@@ -35,30 +35,18 @@ namespace Diplom_Cheremnykh.Pages
             DisplayUserInfo();
         }
 
-        // Метод для отображения информации о пользователе
+
         private void DisplayUserInfo()
         {
             try
             {
-                // Загружаем актуального пользователя из базы по имени
-                var userFromDb = _context.Users.FirstOrDefault(u => u.Username == _currentUser.Username);
+                string username = _currentUser?.Username;
+                var userFromDb = _context.Users.FirstOrDefault(u => u.Username == username);
 
                 if (userFromDb != null)
                 {
-                    // Поиск TextBlock'ов по имени
-                    var usernameTextBlock = this.FindName("UsernameTextBox") as TextBlock;
-                    var roleTextBlock = this.FindName("RoleTextBlock") as TextBlock;
-
-                    // Защита от null — если TextBlock'и найдены
-                    if (usernameTextBlock != null && roleTextBlock != null)
-                    {
-                        usernameTextBlock.Text = $"Имя пользователя: {userFromDb.Username}";
-                        roleTextBlock.Text = $"Роль: {userFromDb.Role}";
-                    }
-                    else
-                    {
-                        MessageBox.Show("Элементы TextBlock не найдены в разметке.");
-                    }
+                    UsernameTextBlock.Text = $"Имя пользователя: {userFromDb.Username}";
+                    RoleTextBlock.Text = $"Роль: {userFromDb.Role}";
                 }
                 else
                 {
@@ -96,7 +84,7 @@ namespace Diplom_Cheremnykh.Pages
         private void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
             // Выход из системы: возврат на страницу входа
-            _mainWindow.OpenPages(new LoginPage(_mainWindow, _context,_currentUser));
+            _mainWindow.OpenPages(new LoginPage(_mainWindow, _context));
         }
     }
 }
