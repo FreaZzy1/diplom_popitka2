@@ -86,5 +86,10 @@ namespace Diplom_Cheremnykh.Pages
             // Выход из системы: возврат на страницу входа
             _mainWindow.OpenPages(new LoginPage(_mainWindow, _context));
         }
+
+        private void CheckFraudButton_Click(object sender, RoutedEventArgs e)
+        {
+            _mainWindow.OpenPages(new PredictionPage(_mainWindow, _context, _currentUser));
+        }
     }
 }
