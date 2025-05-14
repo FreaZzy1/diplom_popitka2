@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Diplom_Cheremnykh.Models;
 using Microsoft.ML;
+using Microsoft.ML.Data;
 
 namespace Diplom_Cheremnykh.ML
 {
@@ -14,44 +15,26 @@ namespace Diplom_Cheremnykh.ML
         {
             var mlContext = new MLContext();
 
-            // Обучающие данные
-            var trainingData = new List<FraudInput>
-{
-    new FraudInput { Amount = 100, Location = 1, TimeOfDay = 10 },
-    new FraudInput { Amount = 5000, Location = 3, TimeOfDay = 2 },
-    new FraudInput { Amount = 150, Location = 2, TimeOfDay = 16 },
-    new FraudInput { Amount = 9000, Location = 5, TimeOfDay = 1 },
-};
-
-            var labels = new List<bool> { false, true, false, true };
-
-            var trainingList = new List<ModelInput>();
-            for (int i = 0; i < trainingData.Count; i++)
-            {
-                trainingList.Add(new ModelInput
-                {
-                    Amount = trainingData[i].Amount,
-                    Location = trainingData[i].Location,
-                    TimeOfDay = trainingData[i].TimeOfDay,
-                    IsFraud = labels[i]
-                });
-            }
+            var trainingList = new List<ModelInput>
+    {
+        new ModelInput { Amount = 100, Location = 1, TimeOfDay = 10, IsFraud = false },
+        new ModelInput { Amount = 5000, Location = 3, TimeOfDay = 2, IsFraud = true },
+        new ModelInput { Amount = 150, Location = 2, TimeOfDay = 16, IsFraud = false },
+        new ModelInput { Amount = 9000, Location = 5, TimeOfDay = 1, IsFraud = true },
+    };
 
             var dataView = mlContext.Data.LoadFromEnumerable(trainingList);
 
-            // Пайплайн для обучения
-            var pipeline = mlContext.Transforms.Concatenate("Features", nameof(ModelInput.Amount), nameof(ModelInput.Location), nameof(ModelInput.TimeOfDay))
-                .Append(mlContext.BinaryClassification.Trainers.FastTree(labelColumnName: nameof(ModelInput.IsFraud), featureColumnName: "Features"));
+            var pipeline = mlContext.Transforms.Conversion.ConvertType("Amount", outputKind: DataKind.Single)
+      .Append(mlContext.Transforms.Conversion.ConvertType("Location", outputKind: DataKind.Single))
+      .Append(mlContext.Transforms.Conversion.ConvertType("TimeOfDay", outputKind: DataKind.Single))
+      .Append(mlContext.Transforms.Concatenate("Features", "Amount", "Location", "TimeOfDay"))
+      .Append(mlContext.BinaryClassification.Trainers.FastForest(labelColumnName: nameof(ModelInput.IsFraud), featureColumnName: "Features"));
 
-            // Обучаем модель
+
             var model = pipeline.Fit(dataView);
 
-            // Сохраняем модель в файл
-            string modelPath = "ml_model.zip";
             mlContext.Model.Save(model, dataView.Schema, modelPath);
-
-            Console.WriteLine($"Модель сохранена: {modelPath}");
-
         }
 
         private class ModelInput : FraudInput

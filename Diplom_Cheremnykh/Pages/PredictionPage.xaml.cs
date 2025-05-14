@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,7 +27,9 @@ namespace Diplom_Cheremnykh.Pages
         public readonly AppDbContext _context;
         public readonly MainWindow _mainWindow;
         public readonly User _currentUser;
-        public readonly PredictionEngine<FraudInput, FraudPrediction> _predictionEngine;
+
+        private PredictionEngine<FraudInput, FraudPrediction>? _predictionEngine;
+        private bool _modelLoaded = false;
         public PredictionPage(MainWindow mainWindow, AppDbContext context, User currentUser)
         {
             InitializeComponent();
@@ -34,27 +37,66 @@ namespace Diplom_Cheremnykh.Pages
             _mainWindow = mainWindow;
             _currentUser = currentUser;
 
-            // Настройка ML.NET
+            LoadModel();
+        }
+
+        private void LoadModel()
+        {
             var mlContext = new MLContext();
-            ITransformer trainedModel = mlContext.Model.Load("ml_model.zip", out _);
-            _predictionEngine = mlContext.Model.CreatePredictionEngine<FraudInput, FraudPrediction>(trainedModel);
+            string modelPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ml_model.zip");
+
+            if (!File.Exists(modelPath))
+            {
+                MessageBox.Show("Файл модели не найден. Сначала обучите модель.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            try
+            {
+                var trainedModel = mlContext.Model.Load(modelPath, out _);
+                _predictionEngine = mlContext.Model.CreatePredictionEngine<FraudInput, FraudPrediction>(trainedModel);
+                _modelLoaded = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при загрузке модели: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void PredictButton_Click(object sender, RoutedEventArgs e)
         {
-            // Пример ввода: данные можно получить из текстбоксов
+            if (!_modelLoaded || _predictionEngine == null)
+            {
+                PredictionResultTextBlock.Text = "Модель не загружена.";
+                return;
+            }
+
+            if (!float.TryParse(AmountTextBox.Text, out float amount) ||
+                !int.TryParse(LocationTextBox.Text, out int location) ||
+                !int.TryParse(TimeOfDayTextBox.Text, out int timeOfDay))
+            {
+                PredictionResultTextBlock.Text = "Введите корректные числовые значения.";
+                return;
+            }
+
             var input = new FraudInput
             {
-                Amount = float.Parse(AmountTextBox.Text), // Конвертируем Amount в float
-                Location = int.Parse(LocationTextBox.Text), // Конвертируем Location в int
-                TimeOfDay = int.Parse(TimeOfDayTextBox.Text)
+                Amount = amount,
+                Location = location,
+                TimeOfDay = timeOfDay
             };
 
-            var prediction = _predictionEngine.Predict(input);
-
-            PredictionResultTextBlock.Text = prediction.IsFraud ?
-                "⚠ Обнаружено мошенничество!" :
-                "✅ Операция безопасна.";
+            try
+            {
+                var prediction = _predictionEngine.Predict(input);
+                PredictionResultTextBlock.Text = prediction.IsFraud
+                    ? "⚠ Обнаружено мошенничество!"
+                    : "✅ Операция безопасна.";
+            }
+            catch (Exception ex)
+            {
+                PredictionResultTextBlock.Text = $"Ошибка при прогнозе: {ex.Message}";
+            }
         }
 
         private void BackButton_Click(object sender, RoutedEventArgs e)

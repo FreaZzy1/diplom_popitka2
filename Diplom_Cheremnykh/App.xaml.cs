@@ -9,7 +9,7 @@ namespace Diplom_Cheremnykh
     /// </summary>
     public partial class App : Application
     {
-
+       
     }
 
 }

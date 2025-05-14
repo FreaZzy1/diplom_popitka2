@@ -9,7 +9,7 @@ namespace Diplom_Cheremnykh.Models
     public class FraudInput
     {
         public float Amount { get; set; }
-        public int Location { get; set; }
-        public int TimeOfDay { get; set; }
+        public float Location { get; set; } // было int
+        public float TimeOfDay { get; set; } // было int
     }
 }

@@ -38,5 +38,6 @@ namespace Diplom_Cheremnykh
         {
             _currentUser = user;
         }
+        
     }
 }
