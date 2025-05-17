@@ -70,7 +70,7 @@ namespace Diplom_Cheremnykh.Pages
         private void ManageFraudCasesButton_Click(object sender, RoutedEventArgs e)
         {
             // Переход к странице для управления случаями мошенничества
-            _mainWindow.OpenPages(new Pages.FraudCasesPage(_mainWindow, _context));
+            _mainWindow.OpenPages(new Pages.FraudCasesPage(_mainWindow, _context,_currentUser));
         }
 
         // Обработчик для кнопки редактирования профиля

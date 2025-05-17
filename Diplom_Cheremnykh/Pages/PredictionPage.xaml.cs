@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Diplom_Cheremnykh.Data;
+using Diplom_Cheremnykh.ML;
 using Diplom_Cheremnykh.Models;
 using Microsoft.ML;
 
@@ -44,6 +45,8 @@ namespace Diplom_Cheremnykh.Pages
         {
             var mlContext = new MLContext();
             string modelPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ml_model.zip");
+            ModelTrainer.TrainAndSaveModel(modelPath);
+
 
             if (!File.Exists(modelPath))
             {
@@ -54,7 +57,8 @@ namespace Diplom_Cheremnykh.Pages
             try
             {
                 var trainedModel = mlContext.Model.Load(modelPath, out _);
-                _predictionEngine = mlContext.Model.CreatePredictionEngine<FraudInput, FraudPrediction>(trainedModel);
+                _predictionEngine = mlContext.Model
+      .CreatePredictionEngine<FraudInput, FraudPrediction>(trainedModel);
                 _modelLoaded = true;
             }
             catch (Exception ex)
@@ -88,10 +92,24 @@ namespace Diplom_Cheremnykh.Pages
 
             try
             {
-                var prediction = _predictionEngine.Predict(input);
-                PredictionResultTextBlock.Text = prediction.IsFraud
-                    ? "⚠ Обнаружено мошенничество!"
-                    : "✅ Операция безопасна.";
+                var result = _predictionEngine.Predict(input);
+
+                // ---------- сохраняем в FraudCases ----------
+                var fraudCase = new FraudCase
+                {
+                    UserId = _currentUser.Id,
+                    Description = $"Amount={amount}, Loc={location}, Time={timeOfDay}",
+                    DetectedAt = DateTime.UtcNow,
+                    FraudProbability = result.Probability   // 0‑1
+                };
+
+                _context.FraudCases.Add(fraudCase);
+                _context.SaveChanges();
+                // ---------------------------------------------
+
+                PredictionResultTextBlock.Text = result.IsFraud
+                    ? $"⚠ Мошенничество ({result.Probability:P1})"
+                    : $"✅ Безопасно ({result.Probability:P1})";
             }
             catch (Exception ex)
             {

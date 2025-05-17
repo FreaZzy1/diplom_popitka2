@@ -1,60 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Diplom_Cheremnykh.Models;
 using Microsoft.ML;
 using Microsoft.ML.Data;
 
 namespace Diplom_Cheremnykh.ML
 {
-    class ModelTrainer
+    public class ModelTrainer
     {
-        public static void TrainAndSaveModel(string modelPath)
-        {
-            var mlContext = new MLContext();
-
-            // Данные
-            var rawData = new List<ModelInput>
-            {
-                new ModelInput { Amount = 100, Location = 1, TimeOfDay = 10, IsFraud = false },
-                new ModelInput { Amount = 5000, Location = 3, TimeOfDay = 2, IsFraud = true },
-                new ModelInput { Amount = 150, Location = 2, TimeOfDay = 16, IsFraud = false },
-                new ModelInput { Amount = 9000, Location = 5, TimeOfDay = 1, IsFraud = true },
-                new ModelInput { Amount = 7500, Location = 4, TimeOfDay = 0, IsFraud = true },
-                new ModelInput { Amount = 200, Location = 1, TimeOfDay = 12, IsFraud = false },
-                new ModelInput { Amount = 10000, Location = 5, TimeOfDay = 3, IsFraud = true },
-                new ModelInput { Amount = 300, Location = 2, TimeOfDay = 14, IsFraud = false },
-                new ModelInput { Amount = 8500, Location = 4, TimeOfDay = 4, IsFraud = true },
-                new ModelInput { Amount = 180, Location = 1, TimeOfDay = 9, IsFraud = false },
-            };
-
-            // Конвертация чисел к float (Single)
-            var trainingList = rawData.Select(x => new ModelInput
-            {
-                Amount = (float)x.Amount,
-                Location = (float)x.Location,
-                TimeOfDay = (float)x.TimeOfDay,
-                IsFraud = x.IsFraud
-            }).ToList();
-
-            var dataView = mlContext.Data.LoadFromEnumerable(trainingList);
-
-            // Пайплайн
-            var pipeline = mlContext.Transforms.Concatenate("Features", nameof(ModelInput.Amount), nameof(ModelInput.Location), nameof(ModelInput.TimeOfDay))
-               .Append(mlContext.BinaryClassification.Trainers.FastForest(
-    labelColumnName: "Label", featureColumnName: "Features"));
-
-            // Обучение
-            var model = pipeline.Fit(dataView);
-
-            // Сохранение
-            mlContext.Model.Save(model, dataView.Schema, modelPath);
-            Console.WriteLine("Модель обучена и сохранена.");
-        }
-
-        private class ModelInput
+        public class ModelInput
         {
             public float Amount { get; set; }
             public float Location { get; set; }
@@ -62,6 +18,66 @@ namespace Diplom_Cheremnykh.ML
 
             [ColumnName("Label")]
             public bool IsFraud { get; set; }
+        }
+
+        public static void TrainAndSaveModel(string modelPath)
+        {
+            var mlContext = new MLContext(seed: 1);
+
+            // Синтетические данные (100 примеров)
+            var data = GenerateFakeData(100);
+
+            // Загрузка в IDataView
+            var dataView = mlContext.Data.LoadFromEnumerable(data);
+
+            // Разделение на train/test
+            var split = mlContext.Data.TrainTestSplit(dataView, testFraction: 0.2);
+
+            // Пайплайн
+            var pipeline = mlContext.Transforms.Concatenate("Features", nameof(ModelInput.Amount), nameof(ModelInput.Location), nameof(ModelInput.TimeOfDay))
+.Append(mlContext.BinaryClassification.Trainers.FastTree(
+    labelColumnName: "Label",
+    featureColumnName: "Features"));
+
+            // Обучение
+            var model = pipeline.Fit(split.TrainSet);
+
+            // Оценка
+            var predictions = model.Transform(split.TestSet);
+            var metrics = mlContext.BinaryClassification.Evaluate(predictions);
+
+            Console.WriteLine($"Accuracy: {metrics.Accuracy:P2}");
+            Console.WriteLine($"AUC: {metrics.AreaUnderRocCurve:P2}");
+            Console.WriteLine($"F1: {metrics.F1Score:P2}");
+
+            // Сохранение модели
+            mlContext.Model.Save(model, split.TrainSet.Schema, modelPath);
+            Console.WriteLine($"Модель сохранена в {modelPath}");
+        }
+
+        private static List<ModelInput> GenerateFakeData(int count)
+        {
+            var rand = new Random();
+            var data = new List<ModelInput>();
+
+            for (int i = 0; i < count; i++)
+            {
+                var amount = (float)(rand.Next(50, 10000));
+                var location = (float)(rand.Next(1, 6)); // локации от 1 до 5
+                var time = (float)(rand.Next(0, 24)); // часы
+
+                bool isFraud = (amount > 5000 && (time < 5 || time > 22)) || (location == 5 && amount > 8000);
+
+                data.Add(new ModelInput
+                {
+                    Amount = amount,
+                    Location = location,
+                    TimeOfDay = time,
+                    IsFraud = isFraud
+                });
+            }
+
+            return data;
         }
     }
 }

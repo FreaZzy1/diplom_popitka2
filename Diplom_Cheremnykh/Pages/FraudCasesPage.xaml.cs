@@ -13,14 +13,16 @@ namespace Diplom_Cheremnykh.Pages
     {
         private readonly MainWindow _mainWindow;
         private readonly AppDbContext _context;
+        public readonly User _currentUser;
 
-        public FraudCasesPage(MainWindow mainWindow, AppDbContext context)
+        public FraudCasesPage(MainWindow mainWindow, AppDbContext context, User currentUser)
         {
             InitializeComponent();
             _mainWindow = mainWindow;
             _context = context;
 
             LoadFraudCases();
+            _currentUser = currentUser;
         }
 
         private void LoadFraudCases()
@@ -47,10 +49,7 @@ namespace Diplom_Cheremnykh.Pages
             }
         }
 
-        private void AddFraudCase_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show("Функция добавления пока не реализована.");
-        }
+       
 
         private void EditFraudCase_Click(object sender, RoutedEventArgs e)
         {
@@ -83,6 +82,14 @@ namespace Diplom_Cheremnykh.Pages
         private void FraudCasesDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
+        }
+
+        private void BackButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (Application.Current.MainWindow is MainWindow mainWindow)
+            {
+                mainWindow.OpenPages(new ModelPage(_mainWindow, _context, _currentUser)); // Замените MainPage на вашу стартовую страницу
+            }
         }
     }
 }
