@@ -13,22 +13,20 @@
             CornerRadius="20"
             VerticalAlignment="Center"
             HorizontalAlignment="Center">
+
         <Grid Width="500">
+            <!-- Строки: 0‑заголовок, 1‑инфо, 2‑управление, 3‑профиль, 4‑проверка, 5‑пользователи,
+                  6‑dashboard, 7‑выход, 8‑доп‑текст -->
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <!-- 0 Заголовок -->
                 <RowDefinition Height="Auto"/>
-                <!-- 1 Инфо о пользователе -->
                 <RowDefinition Height="Auto"/>
-                <!-- 2 Управление мошенничеством -->
                 <RowDefinition Height="Auto"/>
-                <!-- 3 Редактировать профиль -->
                 <RowDefinition Height="Auto"/>
-                <!-- 4 Проверить на мошенничество -->
                 <RowDefinition Height="Auto"/>
-                <!-- 5 Выйти -->
                 <RowDefinition Height="Auto"/>
-                <!-- 6 Доп. информация -->
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
             <!-- 0 Заголовок -->
@@ -38,38 +36,29 @@
                        FontSize="24"
                        FontWeight="Bold"
                        HorizontalAlignment="Center"
-                       Margin="0,0,0,20"/>
+                       Margin="0 0 0 20"/>
 
             <!-- 1 Информация о пользователе -->
-            <StackPanel Grid.Row="1" Margin="0,0,0,20">
+            <StackPanel Grid.Row="1" Margin="0 0 0 20">
                 <TextBlock x:Name="UsernameTextBlock"
                            FontSize="16"
                            FontWeight="Bold"
-                           Foreground="White"
-                           Margin="0,0,0,5"/>
+                           Foreground="White"/>
                 <TextBlock x:Name="RoleTextBlock"
                            FontSize="16"
                            FontWeight="Bold"
                            Foreground="White"/>
             </StackPanel>
 
-            <!-- 2 Управление случаями мошенничества -->
+            <!-- 2 Управление случаями -->
             <Button Grid.Row="2"
                     Content="Управление случаями мошенничества"
                     Height="40"
                     FontSize="16"
                     Style="{StaticResource AccentButtonStyle}"
                     Click="ManageFraudCasesButton_Click"
-                    Margin="0,0,0,10"/>
+                    Margin="0 0 0 10"/>
 
-            <!-- 3 Редактировать профиль -->
-            <Button Grid.Row="3"
-                    Content="Редактировать профиль"
-                    Height="40"
-                    FontSize="16"
-                    Style="{StaticResource AccentButtonStyle}"
-                    Click="EditProfileButton_Click"
-                    Margin="0,0,0,10"/>
 
             <!-- 4 Проверить на мошенничество -->
             <Button Grid.Row="4"
@@ -78,19 +67,37 @@
                     FontSize="16"
                     Style="{StaticResource AccentButtonStyle}"
                     Click="CheckFraudButton_Click"
-                    Margin="0,0,0,10"/>
+                    Margin="0 0 0 10"/>
 
-            <!-- 5 Выйти -->
+            <!-- 5 Пользователи -->
             <Button Grid.Row="5"
+                    Content="Пользователи"
+                    Height="40"
+                    FontSize="16"
+                    Style="{StaticResource AccentButtonStyle}"
+                    Click="UsersButton_Click"
+                    Margin="0 0 0 10"/>
+
+            <!-- 6 Панель мониторинга -->
+            <Button Grid.Row="6"
+                    Content="Панель мониторинга"
+                    Height="40"
+                    FontSize="16"
+                    Style="{StaticResource AccentButtonStyle}"
+                    Click="DashboardButton_Click"
+                    Margin="0 0 0 10"/>
+
+            <!-- 7 Выйти -->
+            <Button Grid.Row="7"
                     Content="Выйти"
                     Height="40"
                     FontSize="16"
                     Style="{StaticResource AccentButtonStyle}"
                     Click="LogoutButton_Click"
-                    Margin="0,0,0,20"/>
+                    Margin="0 0 0 20"/>
 
-            <!-- 6 Дополнительная информация -->
-            <TextBlock Grid.Row="6"
+            <!-- 8 Доп. информация -->
+            <TextBlock Grid.Row="8"
                        Text="Здесь вы можете управлять всеми аспектами системы."
                        Foreground="Gray"
                        FontSize="14"

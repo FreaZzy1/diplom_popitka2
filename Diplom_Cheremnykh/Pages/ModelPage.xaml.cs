@@ -74,11 +74,7 @@ namespace Diplom_Cheremnykh.Pages
         }
 
         // Обработчик для кнопки редактирования профиля
-        private void EditProfileButton_Click(object sender, RoutedEventArgs e)
-        {
-            // Переход к странице для редактирования профиля пользователя
-            _mainWindow.OpenPages(new Pages.EditUserPage(_mainWindow, _context, _currentUser));
-        }
+        
 
         // Обработчик для кнопки выхода из системы
         private void LogoutButton_Click(object sender, RoutedEventArgs e)
@@ -90,6 +86,16 @@ namespace Diplom_Cheremnykh.Pages
         private void CheckFraudButton_Click(object sender, RoutedEventArgs e)
         {
             _mainWindow.OpenPages(new PredictionPage(_mainWindow, _context, _currentUser));
+        }
+
+        private void UsersButton_Click(object sender, RoutedEventArgs e)
+        {
+            _mainWindow.OpenPages(new UsersPage(_mainWindow, _context,_currentUser));
+        }
+
+        private void DashboardButton_Click(object sender, RoutedEventArgs e)
+        {
+            _mainWindow.OpenPages(new DashboardPage(_mainWindow, _context, _currentUser));
         }
     }
 }

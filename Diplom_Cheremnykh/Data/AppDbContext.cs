@@ -14,6 +14,7 @@ namespace Diplom_Cheremnykh.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Log> Logs { get; set; }
         public DbSet<FraudCase> FraudCases { get; set; }
+        public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
 
         public AppDbContext()
         {

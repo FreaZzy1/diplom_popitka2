@@ -105,7 +105,8 @@ namespace Diplom_Cheremnykh.Pages
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
-            _mainWindow.OpenPages(new Pages.ModelPage(_mainWindow, _context,_currentUser));
+            _mainWindow.OpenPages(new Pages.ModelPage(_mainWindow, _context, _currentUser));
         }
     }
 }
+    

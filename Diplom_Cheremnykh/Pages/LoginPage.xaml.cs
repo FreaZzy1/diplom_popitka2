@@ -122,7 +122,7 @@ namespace Diplom_Cheremnykh.Pages
         private void ForgotPasswordButton_Click(object sender, RoutedEventArgs e)
         {
             // Логика восстановления пароля (можно добавить в будущем)
-            MessageBox.Show("Функция восстановления пароля пока не доступна.");
+            _mainWindow.OpenPages(new ForgotPasswordPage(_mainWindow, _context,_currentUser));
         }
     }
 }
