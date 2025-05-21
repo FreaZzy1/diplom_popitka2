@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Diplom_Cheremnykh.Data;
+using Diplom_Cheremnykh.Helpers;
 using Diplom_Cheremnykh.ML;
 using Diplom_Cheremnykh.Models;
 using Microsoft.ML;
@@ -94,22 +95,27 @@ namespace Diplom_Cheremnykh.Pages
             {
                 var result = _predictionEngine.Predict(input);
 
-                // ---------- сохраняем в FraudCases ----------
                 var fraudCase = new FraudCase
                 {
                     UserId = _currentUser.Id,
                     Description = $"Amount={amount}, Loc={location}, Time={timeOfDay}",
                     DetectedAt = DateTime.UtcNow,
-                    FraudProbability = result.Probability   // 0‑1
+                    FraudProbability = result.Probability
                 };
 
                 _context.FraudCases.Add(fraudCase);
                 _context.SaveChanges();
-                // ---------------------------------------------
 
                 PredictionResultTextBlock.Text = result.IsFraud
                     ? $"⚠ Мошенничество ({result.Probability:P1})"
                     : $"✅ Безопасно ({result.Probability:P1})";
+
+                // ✅ Логирование действия
+                Logger.LogAction(
+                    _currentUser.Id,
+                    _currentUser.Email,
+                    $"Сделан прогноз. Сумма: {amount}, Локация: {location}, Время: {timeOfDay}, Результат: {(result.IsFraud ? "Мошенничество" : "Безопасно")}, Вероятность: {result.Probability:P2}"
+                );
             }
             catch (Exception ex)
             {

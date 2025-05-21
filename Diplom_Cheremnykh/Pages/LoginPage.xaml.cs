@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Diplom_Cheremnykh.Data;
+using Diplom_Cheremnykh.Helpers;
 using Diplom_Cheremnykh.Models;
 using Diplom_Cheremnykh.Services;
 using Microsoft.EntityFrameworkCore;
@@ -40,25 +41,24 @@ namespace Diplom_Cheremnykh.Pages
             string username = UsernameTextBox.Text.Trim();
             string password = PasswordBox.Password;
 
-            // Проверка на пустые поля
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
                 MessageBox.Show("Пожалуйста, введите имя пользователя и пароль.");
                 return;
             }
 
-            // Попытка авторизации
             bool loginSuccessful = AuthenticateUser(username, password);
 
             if (loginSuccessful)
             {
-                // Если вход успешен, переход на другую страницу
+                // ✅ Логируем действие только если вход успешен
+                Logger.LogAction(_currentUser.Id, _currentUser.Email, "Совершил вход в систему");
+
                 MessageBox.Show("Вы успешно вошли в систему.");
-                _mainWindow.OpenPages(new Pages.ModelPage(_mainWindow, _context, _currentUser)); // Переход на главную страницу
+                _mainWindow.OpenPages(new Pages.ModelPage(_mainWindow, _context, _currentUser));
             }
             else
             {
-                // Если вход не успешен
                 MessageBox.Show("Неверное имя пользователя или пароль.");
             }
         }
@@ -117,11 +117,12 @@ namespace Diplom_Cheremnykh.Pages
         {
             // Переход на страницу регистрации
             _mainWindow.OpenPages(new Pages.RegisterPage(_mainWindow, _context));
+            
         }
 
         private void ForgotPasswordButton_Click(object sender, RoutedEventArgs e)
         {
-            // Логика восстановления пароля (можно добавить в будущем)
+           
             _mainWindow.OpenPages(new ForgotPasswordPage(_mainWindow, _context));
         }
     }

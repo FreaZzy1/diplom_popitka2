@@ -10,18 +10,12 @@ namespace Diplom_Cheremnykh.Models
 {
     public class Log
     {
-        [Key]
         public int Id { get; set; }
-
-        [Required]
-        public int UserId { get; set; }
-
-        
-        public User User { get; set; }
-
-        
+        public int? UserId { get; set; }
         public string Action { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public string UserEmail { get; set; }
 
-        public DateTime Timestamp { get; set; } = DateTime.Now;
+        public User User { get; set; }
     }
 }

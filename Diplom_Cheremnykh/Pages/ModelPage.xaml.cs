@@ -50,7 +50,11 @@ namespace Diplom_Cheremnykh.Pages
                 }
                 else
                 {
-                    MessageBox.Show($"Пользователь с именем '{_currentUser.Username}' не найден в базе данных.");
+                    if (_currentUser == null)
+                    {
+                        MessageBox.Show("Текущий пользователь не определен (null). Возможно, вы не вошли в систему корректно.");
+                        return;
+                    }
                 }
             }
             catch (Exception ex)
@@ -96,6 +100,11 @@ namespace Diplom_Cheremnykh.Pages
         private void DashboardButton_Click(object sender, RoutedEventArgs e)
         {
             _mainWindow.OpenPages(new DashboardPage(_mainWindow, _context, _currentUser));
+        }
+
+        private void LogsButton_Click(object sender, RoutedEventArgs e)
+        {
+            _mainWindow.OpenPages(new LogsPage(_mainWindow, _context, _currentUser));
         }
     }
 }
